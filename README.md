@@ -89,8 +89,40 @@ Keep in mind that `MysqlUser` and `MysqlDatabase` are namespace-scoped CRD, `Mys
 
 ## Installation
 
+Kubernetes 1.16 or newer is required. Install the CRDs and wait for them to
+be established before starting the operator:
+
 ```
-git clone https://github.com/tomaszkiewicz/mysql-operator
+git clone https://github.com/halkeye/mysql-operator
 cd mysql-operator/deploy
+kubectl apply -f crds/mysql_v1_mysqlcluster_crd.yaml \
+  -f crds/mysql_v1_mysqldatabase_crd.yaml \
+  -f crds/mysql_v1_mysqluser_crd.yaml
+kubectl wait --for=condition=Established --timeout=60s \
+  crd/mysqlclusters.mysql.operator.luktom.net \
+  crd/mysqldatabases.mysql.operator.luktom.net \
+  crd/mysqlusers.mysql.operator.luktom.net
 kustomize build | kubectl apply -f -
 ```
+
+The CRDs use `apiextensions.k8s.io/v1`; custom resources and watches continue
+to use `mysql.operator.luktom.net/v1`. Spec and status fields are preserved,
+including the status written by the Ansible operator. If the operator reports
+`no matches for kind "MysqlDatabase"`, check that all three CRDs are installed
+and established, then restart the operator.
+
+## Docker images
+
+GitHub Actions builds `build/Dockerfile` on pull requests without publishing.
+Pushes to `master` and tags matching `v*` publish images to
+`ghcr.io/halkeye/mysql-operator` using the built-in `GITHUB_TOKEN`, with no
+Docker Hub credentials required. The workflow can also be run manually;
+only the default branch and `v*` tags can publish.
+
+Default-branch builds update `latest`, branch builds are tagged with the branch
+name, and tag builds use the Git tag (for example, `v1.0.0`). Published builds
+also receive a `sha-<short-commit>` tag. Both deployment containers use `latest`;
+pin both to the same release tag or digest for reproducible deployments.
+
+Ensure the GHCR package is public so Kubernetes can pull it without credentials,
+or configure an image pull secret for a private package.
