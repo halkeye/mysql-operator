@@ -20,7 +20,7 @@ spec:
           - /usr/local/bin/ao-logs
           - /tmp/ansible-operator/runner
           - stdout
-          image: "luktom/mysql-operator"
+          image: "ghcr.io/halkeye/mysql-operator:latest"
           volumeMounts:
           - mountPath: /tmp/ansible-operator/runner
             name: runner
@@ -34,7 +34,7 @@ spec:
             limits:
               memory: 100Mi
         - name: operator
-          image: "luktom/mysql-operator"
+          image: "ghcr.io/halkeye/mysql-operator:latest"
           volumeMounts:
           - mountPath: /tmp/ansible-operator/runner
             name: runner
