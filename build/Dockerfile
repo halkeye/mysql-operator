@@ -1,7 +1,7 @@
-FROM quay.io/operator-framework/ansible-operator:v0.10.0
+FROM quay.io/operator-framework/ansible-operator:v0.11.0
 
 USER root
-RUN yum install -y python2-PyMySQL MySQL-python mariadb
+RUN pip3 install --no-cache-dir PyMySQL==1.0.2
 
 RUN useradd -u ${USER_UID} ${USER_NAME}
 USER ${USER_NAME}
