@@ -17,7 +17,7 @@ spec:
       containers:
         - name: operator
           image: "ghcr.io/halkeye/mysql-operator:latest"
-          args: [ "--zap-log-level=info" ]
+          args: [ "--zap-log-level=info", "--leader-election-id=mysql-operator" ]
           env:
             - name: WATCH_NAMESPACE
               value: ""
@@ -27,8 +27,6 @@ spec:
                   fieldPath: metadata.name
             - name: ANSIBLE_DEBUG_LOGS
               value: "True"
-            - name: OPERATOR_NAME
-              value: "mysql-operator"
             # - name: ANSIBLE_VERBOSITY
             #   value: "4"
           resources:
