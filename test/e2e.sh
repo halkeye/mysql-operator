@@ -20,7 +20,19 @@ wait_created() {
 wait_created mysqldatabase testdb
 wait_created mysqluser testuser
 
-mysql_q() { kubectl -n default exec deploy/test-mysql -- mysql -uroot -prootpass -N -e "$1"; }
+mysql_q() {
+  for _ in $(seq 30); do
+    if out=$(kubectl -n default exec deploy/test-mysql -- mysql -h127.0.0.1 -uroot -prootpass -N -e "$1" 2>/dev/null); then
+      echo "$out"; return 0
+    fi
+    sleep 3
+  done
+  echo "mysql query failed: $1" >&2
+  kubectl -n default get pod -l app=test-mysql >&2 || true
+  kubectl -n default describe pod -l app=test-mysql >&2 || true
+  kubectl -n default logs deploy/test-mysql --tail=50 >&2 || true
+  return 1
+}
 has_line() { grep -qx "$1" <<<"$2"; }
 has_line testdb "$(mysql_q 'show databases')"
 has_line testuser "$(mysql_q 'select user from mysql.user')"
