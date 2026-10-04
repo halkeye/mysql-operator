@@ -12,8 +12,8 @@
     operator_sdk.util.k8s_status:
       api_version: mysql.operator.luktom.net/v1
       kind: MysqlUser
-      name: "{{ meta.name }}"
-      namespace: "{{ meta.namespace }}"
+      name: "{{ ansible_operator_meta.name }}"
+      namespace: "{{ ansible_operator_meta.namespace }}"
       status:
         stage: "checking cluster"
 
@@ -25,8 +25,8 @@
       operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlUser
-        name: "{{ meta.name }}"
-        namespace: "{{ meta.namespace }}"
+        name: "{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
         status:
           stage: "creating secret"
 
@@ -34,8 +34,8 @@
       kubernetes.core.k8s_info:
         api_version: v1
         kind: Secret
-        name: "mysql-user-{{ meta.name }}"
-        namespace: "{{ meta.namespace }}"
+        name: "mysql-user-{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
       register: secret_reg
 
     - name: generate secret if required
@@ -46,8 +46,8 @@
           apiVersion: v1
           kind: Secret
           metadata:
-            name: "mysql-user-{{ meta.name }}"
-            namespace: "{{ meta.namespace }}"
+            name: "mysql-user-{{ ansible_operator_meta.name }}"
+            namespace: "{{ ansible_operator_meta.namespace }}"
           data:
             password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits') | b64encode }}"
 
@@ -55,8 +55,8 @@
       kubernetes.core.k8s_info:
         api_version: v1
         kind: Secret
-        name: "mysql-user-{{ meta.name }}"
-        namespace: "{{ meta.namespace }}"
+        name: "mysql-user-{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
       register: secret_reg
 
     - set_fact:
@@ -66,8 +66,8 @@
       operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlUser
-        name: "{{ meta.name }}"
-        namespace: "{{ meta.namespace }}"
+        name: "{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
         status:
           stage: "creating user"
 
@@ -77,7 +77,7 @@
         login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
         login_password: "{{ cluster_secret.data.password | b64decode }}"
-        name: "{{ meta.name }}"
+        name: "{{ ansible_operator_meta.name }}"
         update_password: "{{ update_password | default('on_create') }}"
         password: "{{ password }}"
         host: "{{ host | default('%') }}"
@@ -88,8 +88,8 @@
       operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlUser
-        name: "{{ meta.name }}"
-        namespace: "{{ meta.namespace }}"
+        name: "{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
         status:
           created: true
           stage: "created"
@@ -100,8 +100,8 @@
       operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlUser
-        name: "{{ meta.name }}"
-        namespace: "{{ meta.namespace }}"
+        name: "{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
         status:
           stage: "deleting"
 
@@ -111,6 +111,6 @@
         login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
         login_password: "{{ cluster_secret.data.password | b64decode }}"
-        name: "{{ meta.name }}"
+        name: "{{ ansible_operator_meta.name }}"
         host: "{{ host | default('%') }}"
         state: absent
