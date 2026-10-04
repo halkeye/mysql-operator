@@ -17,7 +17,7 @@ spec:
       containers:
         - name: operator
           image: "ghcr.io/halkeye/mysql-operator:latest"
-          args: [ "--zap-log-level=info", "--leader-election-id=mysql-operator" ]
+          args: [ "--zap-log-level=info", "--leader-election-id=mysql-operator", "--max-concurrent-reconciles=2" ]
           env:
             - name: WATCH_NAMESPACE
               value: ""
@@ -31,6 +31,6 @@ spec:
             #   value: "4"
           resources:
             requests:
-              memory: 400Mi
+              memory: 1Gi
             limits:
-              memory: 400Mi
+              memory: 1Gi
