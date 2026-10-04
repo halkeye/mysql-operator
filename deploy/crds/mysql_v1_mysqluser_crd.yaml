@@ -42,3 +42,6 @@ spec:
     - jsonPath: .status.created
       name: created
       type: boolean
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
