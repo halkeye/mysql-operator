@@ -13,8 +13,8 @@
     operator_sdk.util.k8s_status:
       api_version: mysql.operator.luktom.net/v1
       kind: MysqlDatabase
-      name: "{{ meta.name }}"
-      namespace: "{{ meta.namespace }}"
+      name: "{{ ansible_operator_meta.name }}"
+      namespace: "{{ ansible_operator_meta.namespace }}"
       status:
         stage: "checking cluster"
 
@@ -26,8 +26,8 @@
       operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlDatabase
-        name: "{{ meta.name }}"
-        namespace: "{{ meta.namespace }}"
+        name: "{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
         status:
           stage: "creating"
 
@@ -37,14 +37,14 @@
         login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
         login_password: "{{ cluster_secret.data.password | b64decode }}"
-        name: "{{ meta.name }}"
+        name: "{{ ansible_operator_meta.name }}"
 
     - name: set status
       operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlDatabase
-        name: "{{ meta.name }}"
-        namespace: "{{ meta.namespace }}"
+        name: "{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
         status:
           created: true
           stage: "created"
@@ -55,8 +55,8 @@
       operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlDatabase
-        name: "{{ meta.name }}"
-        namespace: "{{ meta.namespace }}"
+        name: "{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
         status:
           stage: "deleting"
 
@@ -66,6 +66,6 @@
         login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
         login_password: "{{ cluster_secret.data.password | b64decode }}"
-        name: "{{ meta.name }}"
+        name: "{{ ansible_operator_meta.name }}"
         state: absent
       when: drop_on_delete | bool

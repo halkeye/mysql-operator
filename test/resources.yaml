@@ -1,0 +1,30 @@
+apiVersion: mysql.operator.luktom.net/v1
+kind: MysqlCluster
+metadata:
+  name: test-cluster
+spec:
+  host: test-mysql.default.svc.cluster.local
+  username: root
+  secretRef:
+    name: test-mysql-root
+    namespace: default
+---
+apiVersion: mysql.operator.luktom.net/v1
+kind: MysqlDatabase
+metadata:
+  name: testdb
+  namespace: default
+spec:
+  dropOnDelete: true
+  clusterRef:
+    name: test-cluster
+---
+apiVersion: mysql.operator.luktom.net/v1
+kind: MysqlUser
+metadata:
+  name: testuser
+  namespace: default
+spec:
+  clusterRef:
+    name: test-cluster
+  privileges: "testdb.*:ALL"
