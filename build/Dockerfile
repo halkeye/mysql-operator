@@ -1,10 +1,11 @@
-FROM quay.io/operator-framework/ansible-operator:v0.11.0
+FROM quay.io/operator-framework/ansible-operator:v1.42.3
 
 USER root
-RUN pip3 install --no-cache-dir PyMySQL==1.0.2
+RUN pip3 install --no-cache-dir PyMySQL==1.2.3
+USER 1001
 
-RUN useradd -u ${USER_UID} ${USER_NAME}
-USER ${USER_NAME}
+RUN ansible-galaxy collection install ansible.mysql:==5.2.0 \
+      --collections-path ${HOME}/.ansible/collections
 
 COPY watches.yaml ${HOME}/watches.yaml
 

@@ -10,7 +10,7 @@
 
   tasks:
   - name: set status
-    k8s_status:
+    operator_sdk.util.k8s_status:
       api_version: mysql.operator.luktom.net/v1
       kind: MysqlDatabase
       name: "{{ meta.name }}"
@@ -23,7 +23,7 @@
   - when: state == "present"
     block:
     - name: set status
-      k8s_status:
+      operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlDatabase
         name: "{{ meta.name }}"
@@ -32,7 +32,7 @@
           stage: "creating"
 
     - name: create database
-      mysql_db:
+      ansible.mysql.mysql_db:
         login_host: "{{ cluster.spec.host }}"
         login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
@@ -40,7 +40,7 @@
         name: "{{ meta.name }}"
 
     - name: set status
-      k8s_status:
+      operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlDatabase
         name: "{{ meta.name }}"
@@ -52,7 +52,7 @@
   - when: state == "absent"
     block:
     - name: set status
-      k8s_status:
+      operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlDatabase
         name: "{{ meta.name }}"
@@ -61,7 +61,7 @@
           stage: "deleting"
 
     - name: delete database
-      mysql_db:
+      ansible.mysql.mysql_db:
         login_host: "{{ cluster.spec.host }}"
         login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"

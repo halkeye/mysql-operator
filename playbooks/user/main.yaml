@@ -9,7 +9,7 @@
 
   tasks:
   - name: set status
-    k8s_status:
+    operator_sdk.util.k8s_status:
       api_version: mysql.operator.luktom.net/v1
       kind: MysqlUser
       name: "{{ meta.name }}"
@@ -22,7 +22,7 @@
   - when: state == "present"
     block:
     - name: set status
-      k8s_status:
+      operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlUser
         name: "{{ meta.name }}"
@@ -31,7 +31,7 @@
           stage: "creating secret"
 
     - name: read secret
-      k8s_facts:
+      kubernetes.core.k8s_info:
         api_version: v1
         kind: Secret
         name: "mysql-user-{{ meta.name }}"
@@ -40,7 +40,7 @@
 
     - name: generate secret if required
       when: (secret_reg.resources is not defined) or (secret_reg.resources | length == 0)
-      k8s:
+      kubernetes.core.k8s:
         force: false
         definition:
           apiVersion: v1
@@ -52,7 +52,7 @@
             password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits') | b64encode }}"
 
     - name: read secret
-      k8s_facts:
+      kubernetes.core.k8s_info:
         api_version: v1
         kind: Secret
         name: "mysql-user-{{ meta.name }}"
@@ -63,7 +63,7 @@
         password: "{{ (secret_reg.resources | first).data.password | b64decode }}"
 
     - name: set status
-      k8s_status:
+      operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlUser
         name: "{{ meta.name }}"
@@ -72,7 +72,7 @@
           stage: "creating user"
 
     - name: create user
-      mysql_user:
+      ansible.mysql.mysql_user:
         login_host: "{{ cluster.spec.host }}"
         login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
@@ -85,7 +85,7 @@
         priv:  "{{ privileges }}"
 
     - name: set status
-      k8s_status:
+      operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlUser
         name: "{{ meta.name }}"
@@ -97,7 +97,7 @@
   - when: state == "absent"
     block:
     - name: set status
-      k8s_status:
+      operator_sdk.util.k8s_status:
         api_version: mysql.operator.luktom.net/v1
         kind: MysqlUser
         name: "{{ meta.name }}"
@@ -106,7 +106,7 @@
           stage: "deleting"
 
     - name: delete user
-      mysql_user:
+      ansible.mysql.mysql_user:
         login_host: "{{ cluster.spec.host }}"
         login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"

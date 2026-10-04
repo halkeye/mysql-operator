@@ -131,6 +131,7 @@ pin both to the same release tag or digest for reproducible deployments.
 Ensure the GHCR package is public so Kubernetes can pull it without credentials,
 or configure an image pull secret for a private package.
 
-The Docker build uses the schema-v2 `ansible-operator:v0.11.0` base image and
-installs the Python 3 MySQL driver directly with pip instead of the old Python 2
-RPMs. PyMySQL is pinned to `1.0.2` for compatibility with the base's Python 3.6.
+The Docker build uses the `ansible-operator:v1.42.3` base image, installs the
+PyMySQL 1.2.3 driver with pip, and installs the `ansible.mysql` 5.2.0 collection (the
+Kubernetes collections are already bundled in the base image). Ansible output is
+logged by the operator container (`ANSIBLE_DEBUG_LOGS=True`).

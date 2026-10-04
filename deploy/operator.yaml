@@ -15,30 +15,9 @@ spec:
     spec:
       serviceAccountName: mysql-operator
       containers:
-        - name: ansible
-          command:
-          - /usr/local/bin/ao-logs
-          - /tmp/ansible-operator/runner
-          - stdout
-          image: "ghcr.io/halkeye/mysql-operator:latest"
-          volumeMounts:
-          - mountPath: /tmp/ansible-operator/runner
-            name: runner
-            readOnly: true
-          # env:
-          # - name: ANSIBLE_VERBOSITY
-          #   value: "4"
-          resources:
-            requests:
-              memory: 100Mi
-            limits:
-              memory: 100Mi
         - name: operator
           image: "ghcr.io/halkeye/mysql-operator:latest"
-          volumeMounts:
-          - mountPath: /tmp/ansible-operator/runner
-            name: runner
-          args: [ "--verbose" ]
+          args: [ "--zap-log-level=info" ]
           env:
             - name: WATCH_NAMESPACE
               value: ""
@@ -46,6 +25,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: ANSIBLE_DEBUG_LOGS
+              value: "True"
             - name: OPERATOR_NAME
               value: "mysql-operator"
             # - name: ANSIBLE_VERBOSITY
@@ -55,6 +36,3 @@ spec:
               memory: 400Mi
             limits:
               memory: 400Mi
-      volumes:
-        - name: runner
-          emptyDir: {}
