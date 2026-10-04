@@ -14,6 +14,7 @@ kind-deploy:
 	kubectl kustomize deploy \
 		| sed 's#ghcr.io/halkeye/mysql-operator:latest#$(IMAGE)#' \
 		| kubectl --context kind-$(KIND_CLUSTER) apply -f -
+	kubectl --context kind-$(KIND_CLUSTER) -n mysql-operator rollout restart deploy/mysql-operator
 	kubectl --context kind-$(KIND_CLUSTER) -n mysql-operator rollout status deploy/mysql-operator --timeout=180s
 
 kind-test: kind-up kind-load kind-deploy

@@ -25,6 +25,7 @@ mysql_q 'show databases' | grep -qx testdb
 mysql_q "select user from mysql.user" | grep -qx testuser
 echo "database and user created"
 
-kubectl -n default delete mysqluser testuser mysqldatabase testdb --timeout=120s
+kubectl -n default delete mysqluser testuser --timeout=120s
+kubectl -n default delete mysqldatabase testdb --timeout=120s
 ! mysql_q 'show databases' | grep -qx testdb
 echo "database dropped on delete"

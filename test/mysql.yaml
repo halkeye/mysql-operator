@@ -22,6 +22,7 @@ spec:
       containers:
         - name: mysql
           image: mysql:8.4
+          args: ["--mysql-native-password=ON"]
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: rootpass
