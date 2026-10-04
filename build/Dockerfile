@@ -5,7 +5,8 @@ RUN python3 -m ensurepip \
     && python3 -m pip install --no-cache-dir PyMySQL==1.2.3
 USER 1001
 
-RUN ansible-galaxy collection install ansible.mysql:==5.2.0 \
+COPY requirements.yaml ${HOME}/requirements.yaml
+RUN ansible-galaxy collection install -r ${HOME}/requirements.yaml \
       --collections-path ${HOME}/.ansible/collections
 
 COPY watches.yaml ${HOME}/watches.yaml
