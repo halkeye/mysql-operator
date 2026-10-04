@@ -20,6 +20,7 @@ metadata:
   name: example-mysqlcluster
 spec:
   host: mysql.test.luktom.net
+  port: 3306
   username: administrator
   secretRef:
     name: example-mysqlcluster
@@ -35,6 +36,9 @@ type: Opaque
 ```
 
 Keep in mind that the user specified above has to have permissions to create/drop database and to manage users.
+
+`spec.port` is optional and defaults to `3306`. Set it to a different port to
+override the connection port for both database and user management.
 
 Next, we can provision a database:
 

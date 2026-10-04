@@ -34,6 +34,7 @@
     - name: create database
       mysql_db:
         login_host: "{{ cluster.spec.host }}"
+        login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
         login_password: "{{ cluster_secret.data.password | b64decode }}"
         name: "{{ meta.name }}"
@@ -62,6 +63,7 @@
     - name: delete database
       mysql_db:
         login_host: "{{ cluster.spec.host }}"
+        login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
         login_password: "{{ cluster_secret.data.password | b64decode }}"
         name: "{{ meta.name }}"

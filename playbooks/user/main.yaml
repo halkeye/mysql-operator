@@ -74,6 +74,7 @@
     - name: create user
       mysql_user:
         login_host: "{{ cluster.spec.host }}"
+        login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
         login_password: "{{ cluster_secret.data.password | b64decode }}"
         name: "{{ meta.name }}"
@@ -107,6 +108,7 @@
     - name: delete user
       mysql_user:
         login_host: "{{ cluster.spec.host }}"
+        login_port: "{{ cluster.spec.port | default(3306) }}"
         login_user: "{{ cluster.spec.username }}"
         login_password: "{{ cluster_secret.data.password | b64decode }}"
         name: "{{ meta.name }}"
