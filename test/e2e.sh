@@ -20,12 +20,13 @@ wait_created() {
 wait_created mysqldatabase testdb
 wait_created mysqluser testuser
 
-mysql_q() { kubectl -n default exec deploy/test-mysql -- mysql -uroot -prootpass -N -e "$1" 2>/dev/null; }
-mysql_q 'show databases' | grep -qx testdb
-mysql_q "select user from mysql.user" | grep -qx testuser
+mysql_q() { kubectl -n default exec deploy/test-mysql -- mysql -uroot -prootpass -N -e "$1"; }
+has_line() { grep -qx "$1" <<<"$2"; }
+has_line testdb "$(mysql_q 'show databases')"
+has_line testuser "$(mysql_q 'select user from mysql.user')"
 echo "database and user created"
 
 kubectl -n default delete mysqluser testuser --timeout=120s
 kubectl -n default delete mysqldatabase testdb --timeout=120s
-! mysql_q 'show databases' | grep -qx testdb
+! has_line testdb "$(mysql_q 'show databases')"
 echo "database dropped on delete"
