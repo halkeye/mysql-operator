@@ -56,3 +56,19 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up kind
+        uses: helm/kind-action@v1
+        with:
+          cluster_name: mysql-operator
+
+      - name: Run end-to-end test
+        run: make kind-load kind-deploy && ./test/e2e.sh
